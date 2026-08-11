@@ -45,3 +45,10 @@ func main() {
 	fmt.Println("Server running on http://localhost:8080...") // log http://localhost location
 	log.Fatal(http.ListenAndServe(":8080", nil)) // log a fatal error.
 }
+// API handling function
+
+
+// get	/items - fetch inventory from db
+func handleGetItems(w http.ResponseWriter, r *http.Request) {
+	// add later
+}
