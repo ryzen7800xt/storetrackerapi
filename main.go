@@ -64,7 +64,8 @@ func handleGetItems(w http.ResponseWriter, r *http.Request) {
 	for rows.Next() {
 		var item Item
 		if err := rows.Scan(&item.ID, &item.Name, &item.Price); err != nil {
-			// place holder lowks forgot what to put
+			http.Error(w, "Scan error", http.StatusInternalServerError) // ping http for a scan error.
+			return 
 			}
 		 items = append(items, item)
 		}
