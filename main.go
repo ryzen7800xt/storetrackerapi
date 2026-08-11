@@ -50,5 +50,13 @@ func main() {
 
 // get	/items - fetch inventory from db
 func handleGetItems(w http.ResponseWriter, r *http.Request) {
-	// add later
+	
+	w.Header().Set("Content-Type", "application/json") // set the header file to  app/json
+
+	rows, err := dbPool.Query(r.Context(), "SELECT id, name, price FROM items") // SQL QUERY BACK TO THE GOOFY DB
+	if err != nil {
+		http.Error(w, "Database error", http.StatusInternalServerError) // me when error
+		return
+	}
+	defer rows.Close()
 }
