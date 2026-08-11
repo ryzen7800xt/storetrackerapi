@@ -18,14 +18,30 @@ type Item struct {
 	var dbpool  *pgxpool.Pool
 
 func main() {
+	// first step is to load the supabase connection string
 	connStr := os.Getenv("DATABASE_URL")
 	if connStr == "" {
 		log.Fatal("Supabase connection failed.")
 	}
-	var err error
+	// second step is to establish za connection pool
+	var err error // declare error as a variable
 	dbpool, err = pgxpool.New(context.Background(), connStr)
 	if err != nil {
 		log.Fatalf("Unable to connect to database: %v\n", err)
 	}
 	defer dbPool.Close()
+	// third step verifing the connection to the db
+	if err := dbPool.Ping(context.Background()); err != nil {
+		log.Fatalf("Database ping failed: %v\n", err) // db ping fail log
+	}
+	fmt.Println(" Successfully connected to Supabase") // verifying connection to the backend.
+	// http handling with sql
+		http.HandleFunc("GET /items", handleGetItems)
+	http.HandleFunc("GET /items/{id}", handleGetItemByID)
+	http.HandleFunc("POST /items", handleCreateItem)
+	http.HandleFunc("PUT /items/{id}", handleUpdateItem)
+	http.HandleFunc("DELETE /items/{id}", handleDeleteItem)
+
+	fmt.Println("Server running on http://localhost:8080...") // log http://localhost location
+	log.Fatal(http.ListenAndServe(":8080", nil)) // log a fatal error.
 }
