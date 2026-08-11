@@ -59,4 +59,13 @@ func handleGetItems(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer rows.Close()
+
+	var items []Item
+	for rows.Next() {
+		var item Item
+		if err := rows.Scan(&item.ID, &item.Name, &item.Price); err != nil {
+			// place holder lowks forgot what to put
+			}
+		 items = append(items, item)
+		}
 }
