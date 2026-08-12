@@ -115,3 +115,5 @@ func handleCreateItem(w http.ResponseWriter, r *http.Request) {
 func handleUpdateItem(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json") // reroute
 	id := r.PathValue("id")
+
+	var updatedFields Item // begin updatedFields variable
