@@ -110,3 +110,8 @@ func handleCreateItem(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(newItem)
 }
 // end of handleCreateItem function
+
+// PUT /items/{id} update an existing item
+func handleUpdateItem(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json") // reroute
+	id := r.PathValue("id")
