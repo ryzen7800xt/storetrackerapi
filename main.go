@@ -121,3 +121,10 @@ func handleUpdateItem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid payload", http.StatusBadRequest) // http error handling
 		return
 	}
+
+	commandTag, err := dbPool.Exec(r.Context(), "UPDATE items SET name = $1, price = $2 WHERE id = $3", // update the db with sql.
+		updatedFields.Name, updatedFields.Price, id)
+	if err != nil {
+		http.Error(w, "Update failed", http.StatusInternalServerError) // http error handling.
+		return
+	}
