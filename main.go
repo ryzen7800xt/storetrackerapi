@@ -144,3 +144,22 @@ func handleUpdateItem(w http.ResponseWriter, r *http.Request) {
 // im coding in science class
 // what am i doing
 // I dont care about reverse osmosis teach
+func handleDeleteItem(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json") // rerouting
+	id := r.PathValue("id")
+
+	commandTag, err := dbPool.Exec(r.Context(), "DELETE FROM items WHERE id = $1", id) // sql adding
+	if err != nil {
+		http.Error(w, "Delete failed", http.StatusInternalServerError) // error debugging
+		return
+	}
+
+	if commandTag.RowsAffected() == 0 {
+		http.Error(w, "Item not found to delete", http.StatusNotFound) // error debbuging
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent) // 204 Success, No Content
+}
+// WE DID IT WE FINISHED THIS
+
