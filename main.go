@@ -7,15 +7,19 @@ import ( // FELT LIKE COMMITMAXXING
 	"log"
 	"net/http"
 	"os"
+
+	// FIX: Added the mandatory pgxpool package driver
+	"://github.com"
 )
 
 type Item struct {
-		ID    string  `json:"id"` // Use encoding/json to make the 3 tiers of db sorting
-		Name  string  `json:"name"` // name
-		Price float64 `json:"price"` // price
+	ID    string  `json:"id"` // Use encoding/json to make the 3 tiers of db sorting
+	Name  string  `json:"name"` // name
+	Price float64 `json:"price"` // price
 }
 
-	var dbpool  *pgxpool.Pool
+// FIX: Changed dbpool to dbPool to match the rest of your codebase
+var dbPool  *pgxpool.Pool
 
 func main() {
 	// first step is to load the supabase connection string
@@ -25,7 +29,7 @@ func main() {
 	}
 	// second step is to establish za connection pool
 	var err error // declare error as a variable
-	dbpool, err = pgxpool.New(context.Background(), connStr)
+	dbPool, err = pgxpool.New(context.Background(), connStr)
 	if err != nil {
 		log.Fatalf("Unable to connect to database: %v\n", err)
 	}
@@ -36,7 +40,7 @@ func main() {
 	}
 	fmt.Println(" Successfully connected to Supabase") // verifying connection to the backend.
 	// http handling with sql
-		http.HandleFunc("GET /items", handleGetItems)
+	http.HandleFunc("GET /items", handleGetItems)
 	http.HandleFunc("GET /items/{id}", handleGetItemByID)
 	http.HandleFunc("POST /items", handleCreateItem)
 	http.HandleFunc("PUT /items/{id}", handleUpdateItem)
@@ -50,7 +54,7 @@ func main() {
 
 // get	/items - fetch inventory from db
 func handleGetItems(w http.ResponseWriter, r *http.Request) {
-	
+
 	w.Header().Set("Content-Type", "application/json") // set the header file to  app/json
 
 	rows, err := dbPool.Query(r.Context(), "SELECT id, name, price FROM items") // SQL QUERY BACK TO THE GOOFY DB
@@ -65,10 +69,10 @@ func handleGetItems(w http.ResponseWriter, r *http.Request) {
 		var item Item
 		if err := rows.Scan(&item.ID, &item.Name, &item.Price); err != nil {
 			http.Error(w, "Scan error", http.StatusInternalServerError) // ping http for a scan error.
-			return 
-			}
-		 items = append(items, item)
+			return
 		}
+		items = append(items, item)
+	}
 	json.NewEncoder(w).Encode(items)
 }
 
@@ -162,4 +166,3 @@ func handleDeleteItem(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent) // 204 Success, No Content
 }
 // WE DID IT WE FINISHED THIS
-
