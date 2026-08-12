@@ -117,3 +117,7 @@ func handleUpdateItem(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 
 	var updatedFields Item // begin updatedFields variable
+	if err := json.NewDecoder(r.Body).Decode(&updatedFields); err != nil {
+		http.Error(w, "Invalid payload", http.StatusBadRequest) // http error handling
+		return
+	}
