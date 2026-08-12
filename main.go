@@ -128,3 +128,19 @@ func handleUpdateItem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Update failed", http.StatusInternalServerError) // http error handling.
 		return
 	}
+
+	if commandTag.RowsAffected() == 0 {
+		http.Error(w, "Item not found to update", http.StatusNotFound) // error handling
+		return
+	}
+
+	updatedFields.ID = id
+	json.NewEncoder(w).Encode(updatedFields)
+}
+// end of handleUpdateItem function
+// getting bored
+// im so bored
+// someone save me from science class
+// im coding in science class
+// what am i doing
+// I dont care about reverse osmosis teach
