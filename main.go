@@ -88,3 +88,25 @@ func handleGetItemByID(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(item)
 } // finishing the handleGetItembyID function off.
+
+// POST /items Add a new item to inventory very easy access
+func handleCreateItem(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json") //  handleCreateItem
+
+	var newItem Item
+	if err := json.NewDecoder(r.Body).Decode(&newItem); err != nil {
+		http.Error(w, "Invalid payload", http.StatusBadRequest) // http error handling
+		return
+	}
+
+	_, err := dbPool.Exec(r.Context(), "INSERT INTO items (id, name, price) VALUES ($1, $2, $3)", // use sql to insert items.
+		newItem.ID, newItem.Name, newItem.Price)
+	if err != nil {
+		http.Error(w, "Failed to insert data", http.StatusInternalServerError) // error handling if sql doesnt work.
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(newItem)
+}
+// end of handleCreateItem function
