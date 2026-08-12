@@ -69,4 +69,11 @@ func handleGetItems(w http.ResponseWriter, r *http.Request) {
 			}
 		 items = append(items, item)
 		}
+	json.NewEncoder(w).Encode(items)
 }
+
+// GET /items/{id} Fetch a item by ID
+func handleGetItemByID(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	id := r.PathValue("id") // Extract {id} from str
+
