@@ -1,6 +1,7 @@
 package main
 
 import ( // FELT LIKE COMMITMAXXING
+
 	"context"
 	"encoding/json"
 	"fmt"
@@ -8,18 +9,20 @@ import ( // FELT LIKE COMMITMAXXING
 	"net/http"
 	"os"
 
-	// FIX: Added the mandatory pgxpool package driver
 	"://github.com"
 )
 
 type Item struct {
-	ID    string  `json:"id"` // Use encoding/json to make the 3 tiers of db sorting
-	Name  string  `json:"name"` // name
+	ID    string  `json:"id"`    // Use encoding/json to make the 3 tiers of db sorting
+	Name  string  `json:"name"`  // name
 	Price float64 `json:"price"` // price
 }
 
+// FIX: Tricking GoLand's auto-formatter so it never deletes this package again
+var _ = pgxpool.Pool{}
+
 // FIX: Changed dbpool to dbPool to match the rest of your codebase
-var dbPool  *pgxpool.Pool
+var dbPool *pgxpool.Pool
 
 func main() {
 	// first step is to load the supabase connection string
@@ -47,10 +50,10 @@ func main() {
 	http.HandleFunc("DELETE /items/{id}", handleDeleteItem)
 
 	fmt.Println("Server running on http://localhost:8080...") // log http://localhost location
-	log.Fatal(http.ListenAndServe(":8080", nil)) // log a fatal error.
+	log.Fatal(http.ListenAndServe(":8080", nil))              // log a fatal error.
 }
-// API handling function
 
+// API handling function
 
 // get	/items - fetch inventory from db
 func handleGetItems(w http.ResponseWriter, r *http.Request) {
@@ -113,6 +116,7 @@ func handleCreateItem(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(newItem)
 }
+
 // end of handleCreateItem function
 
 // PUT /items/{id} update an existing item
@@ -141,6 +145,7 @@ func handleUpdateItem(w http.ResponseWriter, r *http.Request) {
 	updatedFields.ID = id
 	json.NewEncoder(w).Encode(updatedFields)
 }
+
 // end of handleUpdateItem function
 // getting bored
 // im so bored
@@ -165,4 +170,5 @@ func handleDeleteItem(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusNoContent) // 204 Success, No Content
 }
+
 // WE DID IT WE FINISHED THIS
