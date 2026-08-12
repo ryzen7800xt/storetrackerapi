@@ -77,3 +77,8 @@ func handleGetItemByID(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	id := r.PathValue("id") // Extract {id} from str
 
+	var item Item
+	err := dbPool.QueryRow(r.Context(), "SELECT id, name, price FROM items WHERE id = $1", id).
+		Scan(&item.ID, &item.Name, &item.Price)
+	// adding error if else statements
+
